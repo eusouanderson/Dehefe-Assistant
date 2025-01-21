@@ -52,5 +52,3 @@ def obter_tempo_agora():
     
     return f"{hora_extenso} e {minuto_extenso}"
 
-# Exemplo de uso
-print(obter_tempo_agora())
