@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dehefe Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .log {
+            margin-top: 20px;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-width: 600px;
+            margin: auto;
+            text-align: left;
+        }
+        .log p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dehefe Assistant</h1>
+    <p>O assistente está ouvindo...</p>
+    <div class="log" id="log">
+        <p>Log de interações aparecerá aqui...</p>
+    </div>
+
+    <script>
+        async function fetchAudioResponse() {
+            try {
+                const response = await fetch('/audio');
+                if (!response.ok) throw new Error("Falha ao buscar resposta");
+
+                const data = await response.json();
+                const log = document.getElementById('log');
+                const newLog = document.createElement('p');
+
+                if (data.response) {
+                    newLog.textContent = `Usuário: "${data.message}" - Resposta: "${data.response}"`;
+                } else if (data.error) {
+                    newLog.textContent = `Erro: ${data.error}`;
+                }
+
+                log.appendChild(newLog);
+            } catch (error) {
+                console.error("Erro ao buscar resposta de áudio:", error);
+            }
+        }
+
+        // Requisição ao backend a cada 10 segundos
+        setInterval(fetchAudioResponse, 10000);
+    </script>
+</body>
+</html>
