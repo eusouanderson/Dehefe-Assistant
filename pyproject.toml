@@ -29,7 +29,10 @@ pygame = "^2.6.1"
 yt-dlp = "^2025.1.15"
 python-vlc = "^3.0.21203"
 googlesearch-python = "^1.3.0"
+pytz = "^2024.2"
 
+[tool.poetry.scripts]
+start = "poetry run python main.py"
 
 [tool.poetry.group.dev.dependencies]
 webdriver-manager = "^4.0.2"

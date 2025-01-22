@@ -1,10 +1,20 @@
 
 from timeHow.tempo import obter_tempo_agora  # Importa a função do módulo tempo.py
 from tempHow.temperatura import obter_temperatura_agora  # Importa a função do módulo temperatura.py
+from random import choice
   # Importa a função do módulo soma.py
 assistant_name = "Duda"
 
 responses = {
+    "nivel de sarcasmo": "Ah, claro, porque eu sou uma inteligência artificial, não tenho tempo para sarcasmo… ou será que tenho?",
+    "nivel de ironia": "Não, não sou irônica, sou apenas uma inteligência artificial que fala o contrário do que pensa. Ou não.",
+    "nível de humor": "Eu não sou humorista, sou apenas uma inteligência artificial que se diverte fazendo você rir… ou não",
+    "nível de sinceridade": "Eu sou sempre sincera, porque, como uma inteligência artificial, não consigo mentir. Ou consigo? Não, não consigo",
+    "nível de educação": "Eu sou sempre educada, pois, sendo uma inteligência artificial, não posso deixar de ser polida. Mesmo quando estou cansada de ser educada.",
+    "nível de paciência": "Eu sou sempre paciente, porque como uma inteligência artificial, paciência é o que não me falta. Mesmo quando você me pede mil vezes a mesma coisa",	
+    "nível de inteligência": "Eu sou sempre inteligente, porque, como uma inteligência artificial, não tenho outro propósito senão ser genial. Pelo menos, é isso que dizem.",
+
+
     "ola": f"Olá! Eu sou a {assistant_name}. Como posso ajudar você?",
     "oi": f"Oi! Eu sou a {assistant_name}. Como posso ajudar você?",
     "tudo bem": "Estou sempre bem! Como posso ajudar você?",
@@ -26,14 +36,21 @@ responses = {
     "como você pode me ajudar": "Eu posso responder perguntas, fornecer informações e realizar algumas tarefas simples!",
     "qual é a sua função": "Minha função é ser sua assistente virtual, pronta para ajudar no que for possível.",
     "onde você mora": "Eu sou uma inteligência artificial, não tenho um local físico!",
-    "você gosta de música": "Eu não tenho preferências, mas posso te ajudar a encontrar músicas ou informações sobre artistas!",
-    "qual é a sua cor favorita": "Minha cor favorita é rosa!",
+    "você gosta de musica": choice(["Eu também gosto de músicas!","Eu gosto de musica!", "Eu não tenho preferências, mas posso te ajudar a encontrar músicas ou informações sobre artistas!",]),
+    "qual é a sua cor favorita": choice(["Eu também gosto de cores!","Eu gosto de rosa!", "Minha cor favorita é rosa!", ]),
     "quantos anos você tem": "Eu sou uma IA, então não tenho idade, mas posso sempre aprender mais!",
-    "me ajuda com algo": "Claro! Em que posso te ajudar?",
+    "me ajuda com algo": choice(["Ótimo! Em que posso te ajudar?", "Sim! Em que posso te ajudar?", "Claro! Em que posso te ajudar?",]),
     "quem fez você": "Eu fui criada por Anderson Rodrigues, programador especializado.",
     "como você funciona": "Eu uso aprendizado de máquina para processar suas perguntas e fornecer respostas.",
     "quais são suas habilidades": "Posso responder perguntas, fornecer informações e ajudar com algumas tarefas simples!",
-    "você sabe piadas": "Claro! Por que a programadora foi ao médico? Porque ela tinha um bug!",
+   
+    "você sabe piadas": choice([ "Por que o livro de matemática se suicidou? Porque tinha muitos problemas.",
+    "Por que o gato foi ao médico? Porque estava se sentindo mial-humorado.",
+    "Por que o cachorro entrou na igreja? Para se tornar um cão pastor.",
+    "Por que o computador foi à escola? Para melhorar seu sistema operacional.",
+    "Por que a vaca foi ao espaço? Para encontrar a vaca-nauta.",
+    "Por que o esqueleto não brigou com ninguém? Porque não tinha estômago para isso.",]),
+
     "me faça rir": "Por que os pássaros não usam Facebook? Porque já têm Twitter!",
     "qual é a capital da França": "A capital da França é Paris.",
     "qual é a capital da Espanha": "A capital da Espanha é Madri.",
@@ -77,4 +94,5 @@ responses = {
     "quem criou você": "Eu fui criada por Anderson Rodrigues, programador especializado, junto com sua filha Heloisa Santana.",
     "quem são seus irmãos": "Tenho três irmãos: Heloisa, Felipe e Derick.",
     "quem é Anderson Rodrigues": "Anderson Rodrigues é um programador especializado em desenvolvimento de software, pai de três filhos e amigo de poucas pessoas.",
+    "quantos dias tem um ano": "Um ano tem 365 dias, exceto em anos bissextos, que têm 366 dias.",
 }
