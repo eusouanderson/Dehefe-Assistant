@@ -13,7 +13,7 @@ import time
 log_buffer = []
 
 class Assistant:
-    def __init__(self, name="Duda"):
+    def __init__(self, name="Maria"):
         self.name = name
         self.active_until = 0
         self.assistant_on = True
@@ -23,12 +23,15 @@ class Assistant:
         self.response_lock = threading.Lock()
         self.last_spoken_response = ""
 
-    def get_response(self, user_input):
+    def get_response(self, user_input, min_score=88):
         user_input = unidecode(user_input.lower())
         best_match = process.extractOne(user_input, responses.keys())
         if best_match:
-            matched_response = best_match[0]
-            return responses.get(matched_response, "Desculpe, eu não entendi a sua pergunta. Pode reformular?")
+            matched_response, score = best_match  # A tupla best_match tem dois elementos: a resposta e a pontuação
+            if score >= min_score:
+                return responses.get(matched_response, "Desculpe, eu não entendi a sua pergunta. Pode reformular?")
+            else:
+                return "Desculpe, não consegui encontrar uma correspondência satisfatória."
         else:
             return "Desculpe, não entendi o que você disse."
 
@@ -43,25 +46,43 @@ class Assistant:
     
     def capture_voice(self):
         recognizer = sr.Recognizer()
-        recognizer.energy_threshold = 300  # Ajuste conforme necessário
-        with sr.Microphone() as source:
-            print(f"{self.name} está ouvindo... Diga algo!")
-            try:
-                audio = recognizer.listen(source)
+        recognizer.energy_threshold = 300  # Ajusta a sensibilidade do reconhecimento de voz
+        
+        try:
+            # Seleciona o microfone e começa a ouvir
+            with sr.Microphone() as source:
+                print(f"{self.name} está ouvindo... Diga algo!")
+                
+                # Adiciona um tempo limite para evitar loops eternos ao escutar
+                audio = recognizer.listen(source, timeout=5, phrase_time_limit=10)
+                
+                # Faz o reconhecimento de voz
                 text = recognizer.recognize_google(audio, language="pt-BR")
                 text_no_accents = unidecode(text).strip()
-
+                
                 # Verifica se a entrada é igual à última resposta falada
                 if text_no_accents == self.last_spoken_response:
                     print("Ignorando entrada auto-gerada.")
                     return ""  # Ignora a entrada gerada pela assistente
-
+                
                 print(f"Você disse: {text_no_accents}")
                 return text_no_accents
-            except sr.UnknownValueError:
-                return "Nao consegui entender o que voce disse."
-            except sr.RequestError as e:
-                return f"Erro ao acessar o servico de reconhecimento: {e}"
+    
+        except sr.UnknownValueError:
+            # Caso o reconhecimento não entenda o áudio
+            print("Não consegui entender o que você disse.")
+            return "Nao consegui entender o que voce disse."
+    
+        except sr.RequestError as e:
+            # Caso haja erro ao acessar o serviço de reconhecimento
+            print(f"Erro ao acessar o serviço de reconhecimento: {e}")
+            return f"Erro ao acessar o servico de reconhecimento: {e}"
+    
+        except Exception as e:
+            # Tratamento genérico para outros erros
+            print(f"Erro inesperado: {e}")
+            return f"Erro inesperado: {e}"
+
 
     def response_to_name(self):
         with self.response_lock:
@@ -80,6 +101,7 @@ class Assistant:
 
     def process_voice_input(self, user_input):
         print(f"Entrada de voz processada: {user_input}")
+        print(f"Estado do assistente: {self.assistant_on} @@@@@@@@@@@@@@@@@")  # Imprime o estado do assistente (self.assistant_on)
 
         # Verifica se a assistente está ativa
         if not self.assistant_on:
@@ -115,36 +137,39 @@ class Assistant:
             self.handle_active_commands(user_input)
 
     def handle_active_commands(self, user_input):
+         
+         # Condição para ligar o assistente
+        if user_input.lower() == "ligar" and not self.assistant_on:
+            self.speak("Olá, estou de volta. Como posso te ajudar?")
+            self.assistant_on = True
+        
         # Condição para desligar o assistente
-        if user_input.lower() == "desligar":
+        if user_input.lower() == "desligar" and self.assistant_on:
             self.speak("Tudo bem, vou desligar. Até logo!")
             self.assistant_on = False
-
-        # Condição para ligar o assistente
-        elif user_input.lower() == "ligar":
-            print("Assistente ligada.")
-            self.speak("Olá, estou de volta. Como posso te ajudar?")
-            self.activate()
 
         # Condição para iniciar o modo de cálculo
         elif user_input.lower() == "calcular" and self.assistant_on:
             self.speak("Me fale a expressão que deseja calcular.")
             while True:  # Loop para continuar aguardando a expressão de cálculo
                 user_input = self.capture_voice()  # Captura a voz do usuário
-                print(f"Entrada de voz capturada: {user_input}")
                 
                 if user_input:  # Apenas processa se houver uma entrada válida
-                    # Condição para sair do modo de cálculo
                     
+                    # Condição para sair do modo de cálculo
                     if "sair de calcular" in user_input.lower():
                         self.speak("Saindo do modo de cálculo.")
                         break  # Encerra o loop de cálculo
                     
-                    # Realiza o cálculo da expressão
+                    user_input = user_input.replace("vezes", "*").replace("dividido por", "/").replace("mais", "+").replace("menos", "-").replace("x", "*")
                     if re.match(r'^[0-9+\-*/().\s]+$', user_input):
                         try:
                             result = calcular_soma_agora(user_input).replace("calcular", "").strip()
-                            self.speak(f"O resultado é {result}")
+                            if not result:
+                                self.speak("Desculpe, não consegui entender a expressão. Tente novamente.")
+
+                            self.speak(result)
+                            
                         except Exception as e:
                             self.speak("Desculpe, não consegui entender a expressão. Tente novamente.")
                             print(f"Erro no cálculo: {e}")
@@ -158,7 +183,7 @@ class Assistant:
                 self.speak(self.response)
 
     def speak(self, text):
-        if not text.strip():
+        if not text or not text.strip():
             return  # Ignora texto vazio
         
         # Evita falar repetidamente a mesma coisa

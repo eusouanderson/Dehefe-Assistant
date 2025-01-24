@@ -33,7 +33,5 @@ def calcular_soma_agora(expressao):
             return f"O resultado da operação é {resultado}"
         else:
             raise ValueError("Resultado da operação não é válido.")
-    
     except Exception as e:
-        print(f"Erro ao calcular: {e}")
-        return f"Erro ao calcular: {e}"
+        return 
