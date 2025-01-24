@@ -86,7 +86,7 @@ class Assistant:
 
     def response_to_name(self):
         with self.response_lock:
-            engine = pyttsx3.init()
+            engine = pyttsx3.init(driverName="espeak")
             engine.setProperty('rate', 200)
             engine.setProperty('volume', 1)
             engine.say("Oi, me chamou?")

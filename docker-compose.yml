@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  python-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    isolation: process # Necessário para Windows containers
+    ports:
+      - "8080:8080"

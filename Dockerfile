@@ -1,15 +1,15 @@
-FROM python:3.12.0-slim-buster
+# Usa uma imagem base do Python
+FROM python:3.12-slim
 
+# Define o diretório de trabalho
 WORKDIR /app
 
-#Usando poetry 
-RUN pip install poetry
-COPY pyproject.toml poetry.lock ./
-
-RUN poetry install
-
+# Copia os arquivos do projeto para o contêiner
 COPY . .
 
-CMD ["python", "main.py"]
+# Instala dependências usando poetry (ou pip, se preferir)
+RUN pip install --no-cache-dir poetry
+RUN poetry install
 
-EXPOSE 5000
+# Define o comando para iniciar a aplicação
+CMD ["python", "main.py"]

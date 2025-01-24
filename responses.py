@@ -6,8 +6,6 @@ from random import choice
 assistant_name = "Maria"
 
 responses = {
-
-
     "nivel de sarcasmo": "Ah, claro, porque eu sou uma inteligência artificial, não tenho tempo para sarcasmo… ou será que tenho?",
     "nivel de ironia": "Não, não sou irônica, sou apenas uma inteligência artificial que fala o contrário do que pensa. Ou não.",
     "nível de humor": "Eu não sou humorista, sou apenas uma inteligência artificial que se diverte fazendo você rir… ou não",
