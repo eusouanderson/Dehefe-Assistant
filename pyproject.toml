@@ -30,13 +30,46 @@ yt-dlp = "^2025.1.15"
 python-vlc = "^3.0.21203"
 googlesearch-python = "^1.3.0"
 pytz = "^2024.2"
+google-generativeai = "^0.8.5"
+python-dotenv = "^1.1.1"
+playsound = "1.2.2"
+waitress = "^3.0.2"
 
 [tool.poetry.scripts]
 start = "poetry run python main.py"
 
 [tool.poetry.group.dev.dependencies]
-webdriver-manager = "^4.0.2"
+ruff = "^0.11.13"
+pytest = "^8.4.0"
+pytest-cov = "^6.2.1"
+taskipy = "^1.14.1"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.ruff]
+line-length = 79
+extend-exclude = ['migrations']
+
+[tool.ruff.lint]
+preview = true
+select = ['I', 'F', 'E', 'W', 'PL', 'PT']
+
+[tool.ruff.format]
+preview = true
+quote-style = 'single'
+
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = "--cov=fastapi_zero --cov-report=term-missing -p no:warnings"
+
+[tool.taskipy.tasks]
+lint = 'ruff check'
+pre_format = 'ruff check --fix'
+format = 'ruff format'
+run = 'poetry run python main.py'
+pre_test = 'task lint'
+test = 'pytest -s -x --cov=fast_zero -vv'
+post_test = 'coverage html'

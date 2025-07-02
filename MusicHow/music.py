@@ -1,44 +1,41 @@
-import yt_dlp
 import os
-import time
 
-# Caminho absoluto do diretório onde o script está sendo executado
-path = os.path.abspath(os.path.dirname(__file__))
-print(f"Caminho atual: {path}")
+import playsound
+import yt_dlp
 
-def buscar_e_tocar_musica(musica):
-    # Configurações do yt-dlp para baixar o áudio
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'extractaudio': True,
-        'audioquality': 1,
-        'outtmpl': os.path.join(path, 'temp_audio.%(ext)s'),  # Salva o arquivo no diretório atual
-        'quiet': False
-    }
 
-    # Realiza a busca no YouTube com yt-dlp
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        search_url = f"ytsearch:{musica}"
-        info_dict = ydl.extract_info(search_url, download=True)
-        video_url = info_dict['entries'][0]['url']
+class MusicPlayer:
+    def __init__(self):
+        self.path = os.path.abspath(os.path.dirname(__file__))
+        self.temp_audio_filename = 'temp_audio.mp3'  # vamos forçar mp3
+        print(f'Caminho atual: {self.path}')
 
-    # O nome do arquivo baixado (considerando a extensão correta)
-    audio_file = os.path.join(path, 'temp_audio.webm')  # Caminho absoluto do arquivo baixado
+    def buscar_e_tocar_musica(self, musica: str):
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'outtmpl': os.path.join(self.path, 'temp_audio.%(ext)s'),
+            'quiet': True,
+            'postprocessors': [],
+        }
 
-    # Tenta abrir o arquivo de áudio no app Filmes e TV
-    os.system(f"powershell Start-Process 'ms-windows-store://pdp/?PFN=Microsoft.ZuneMusic_8wekyb3d8bbwe'")
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            search_url = f'ytsearch:{musica}'
+            ydl.extract_info(search_url, download=True)
 
-    # Aguardar um pouco para garantir que o app seja aberto
-    time.sleep(2)
+        audio_file = os.path.join(self.path, self.temp_audio_filename)
 
-    # Usar o app Filmes e TV para reproduzir o áudio
-    os.system(f"start microsoft.microsoftmusic:{audio_file}")
+        try:
+            playsound.playsound(audio_file)
+        except Exception as e:
+            print(f'Erro ao tocar áudio: {e}')
 
-    # Limpa o arquivo temporário após reprodução
-    os.remove(audio_file)
+        # Remove arquivo temporário
+        if os.path.exists(audio_file):
+            os.remove(audio_file)
 
-    print("Música tocando...")
+        print('Música tocando...')
 
-# Exemplo de uso
-musica = "Shape of You Ed Sheeran"
-buscar_e_tocar_musica(musica)
+
+if __name__ == '__main__':
+    player = MusicPlayer()
+    player.buscar_e_tocar_musica('Shape of You Ed Sheeran')

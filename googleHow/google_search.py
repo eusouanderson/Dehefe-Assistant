@@ -1,5 +1,6 @@
 from googlesearch import search
 
+
 def pesquisar_no_google(consulta, num_resultados=5):
     """
     Faz uma pesquisa no Google e retorna os links encontrados.
@@ -9,10 +10,8 @@ def pesquisar_no_google(consulta, num_resultados=5):
     :return: Lista de links encontrados.
     """
     try:
-        resultados = search(consulta, num_results=num_resultados, lang="pt")
+        resultados = search(consulta, num_results=num_resultados, lang='pt')
         return list(resultados)
     except Exception as e:
-        print(f"Erro ao realizar a pesquisa: {e}")
+        print(f'Erro ao realizar a pesquisa: {e}')
         return []
-
-
